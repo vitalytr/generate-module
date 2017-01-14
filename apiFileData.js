@@ -1,3 +1,7 @@
+'use strict';
+
+const os = require('os');
+
 const toUpper = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
@@ -10,37 +14,31 @@ data.controller = (moduleName) => {
 import response from './../../../shared/response';
 
 export default class ${name}Ctrl {
-    constructor() {
-    }
-    
+
     static async getMany(ctx) {
         const ${moduleName} = new Model(ctx.state.user);
-        const data = await ${moduleName}.getMany(ctx.query);
-        this.body = response(ctx.method, data.info, data.optional);
+        const data = await ${moduleName}.getMany(ctx.query, ctx.params);
+        ctx.body = response(ctx.method, data.info, data.optional);
     }
-    
     static async getOne(ctx) {
         const ${moduleName} = new Model(ctx.state.user);
-        const data = await ${moduleName}.getOne(ctx.query);
-        this.body = response(ctx.method, data);
+        const data = await ${moduleName}.getOne(ctx.query, ctx.params);
+        ctx.body = response(ctx.method, data);
     }
-    
     static async post(ctx) {
         const ${moduleName} = new Model(ctx.state.user);
-        const data = await ${moduleName}.post(ctx.query, ctx.request.body);
-        this.body = response(ctx.method, data);
+        const data = await ${moduleName}.post(ctx.query, ctx.params, ctx.request.body);
+        ctx.body = response(ctx.method, data);
     }
-    
     static async put(ctx) {
         const ${moduleName} = new Model(ctx.state.user);
-        const data = await ${moduleName}.put(ctx.query, ctx.request.body);
-        this.body = response(ctx.method, data);
+        const data = await ${moduleName}.put(ctx.query, ctx.params, ctx.request.body);
+        ctx.body = response(ctx.method, data);
     }
-    
     static async delete(ctx) {
         const ${moduleName} = new Model(ctx.state.user);
-        await ${moduleName}.delete(ctx.query);
-        this.body = response(ctx.method);
+        await ${moduleName}.delete(ctx.query, ctx.params);
+        ctx.body = response(ctx.method);
     }
 }
 `
@@ -49,40 +47,41 @@ export default class ${name}Ctrl {
 data.model = (moduleName) => {
     const name = toUpper(moduleName);
     return `import path from 'path';
-import { sql, qFile, qPath } from './../../../shared/database';
+import { sql, qFile, qPath, additionalQuery } from './../../../shared/database';
+
+const sqlDirPath = path.join(__dirname, './sql');
 
 export default class ${name}Ctrl {
     constructor(user) {
         this.user = user;
     }
-    
-    async getMany(params) {
-        const limit = params.limit || 20;
-        const offset = params.offset || 0;
-        const queryParams = [limit, offset];
-        const data = { info: null, optional: { limit, offset }};
+    async getMany(qs, params) {
+        let sqlQuery = qFile(qPath(sqlDirPath, 'getMany')).query;
+        const countQuery = qFile(qPath(sqlDirPath, 'getTotalCount')).query;
+        const data = { info: null, optional: { limit: query.limit || 50, offset: query.offset || 0 } };
+        sqlQuery += additionalQuery(qs);
         await sql.task(async (task) => {
-            const total = await task.one(qFile(qPath(sqlDirPath, 'getTotalCount')));
+            const total = await task.one(countQuery);
             data.optional.total = total.count;
-            data.info = await task.any(qFile(qPath(sqlDirPath, 'getMany')));
+            data.info = await task.any(sqlQuery);
         });
         return data;
     }
-    
-    async getOne(params) {
-        return sql.one(qFile(qPath(sqlDirPath, 'getOne')));
+    async getOne(qs, params) {
+        const sqlQuery = qFile(qPath(sqlDirPath, 'getOne')).query;
+        return sql.one(sqlQuery, params);
     }
-    
-    async post(params, body) {
-        return sql.one(qFile(qPath(sqlDirPath, 'post')));
+    async post(qs, params, body) {
+        const sqlQuery = qFile(qPath(sqlDirPath, 'post')).query;
+        return sql.one(sqlQuery, { ...params, ...body });
     }
-    
-    async put(params, body) {
-        return sql.one(qFile(qPath(sqlDirPath, 'put')));
+    async put(qs, params, body) {
+        const sqlQuery = qFile(qPath(sqlDirPath, 'put')).query;
+        return sql.one(sqlQuery, { ...params, ...body });
     }
-    
-    async delete(params) {
-        return sql.none(qFile(qPath(sqlDirPath, 'delete')))
+    async delete(qs, params) {
+        const sqlQuery = qFile(qPath(sqlDirPath, 'delete').query);
+        return sql.none(sqlQuery, params);
     }
 }
 `
@@ -90,17 +89,18 @@ export default class ${name}Ctrl {
 
 data.routes = (moduleName) => {
     const name = toUpper(moduleName);
+    const main = os.platform() === 'win32' ? process.cwd().split('\\') : process.cwd().split('/');
     return `import Router from 'koa-router';
 import ${name} from './controller';
 
 const router = new Router({
-    prefix: '/${moduleName}',
+    prefix: '/${main[main.length - 1]}/${moduleName}',
 });
 
-router.get('/', ${name}.getAll);
+router.get('/', ${name}.getMany);
 router.post('/', ${name}.post);
 router.get('/:id', ${name}.getOne);
-router.update('/:id', ${name}.update);
+router.put('/:id', ${name}.put);
 router.del('/:id', ${name}.delete);
 
 export default router;

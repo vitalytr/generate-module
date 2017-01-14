@@ -38,7 +38,8 @@ const createModule = (moduleName) => {
             .then(() => {
                 const filesSQL = [];
                 structureSQL.forEach(item => {
-                    filesSQL.push(fs.writeFileAsync(path.join(tempPathSQL, item)));
+                    const fPath = path.join(tempPathSQL, item);
+                    filesSQL.push(fs.writeFileAsync(fPath, ' '));
                 });
                 return Promise.all(filesSQL);
             });
