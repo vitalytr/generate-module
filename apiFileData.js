@@ -17,7 +17,7 @@ export default class ${name}Ctrl {
 
     static async getMany(ctx) {
         const ${moduleName} = new Model(ctx.state.user);
-        const data = await ${moduleName}.getMany(ctx.query, ctx.params);
+        const data = await ${moduleName}.getMany(ctx.params, ctx.query);
         ctx.body = response(ctx.method, data.info, data.optional);
     }
     static async getOne(ctx) {
@@ -55,10 +55,10 @@ export default class ${name}Ctrl {
     constructor(user) {
         this.user = user;
     }
-    async getMany(qs, params) {
+    async getMany(params, qs) {
         let sqlQuery = qFile(qPath(sqlDirPath, 'getMany')).query;
         const countQuery = qFile(qPath(sqlDirPath, 'getTotalCount')).query;
-        const data = { info: null, optional: { limit: query.limit || 50, offset: query.offset || 0 } };
+        const data = { info: null, optional: { limit: qs.limit || 50, offset: qs.offset || 0 } };
         sqlQuery += additionalQuery(qs);
         await sql.task(async (task) => {
             const total = await task.one(countQuery);
@@ -80,7 +80,7 @@ export default class ${name}Ctrl {
         return sql.one(sqlQuery, { ...params, ...body });
     }
     async delete(qs, params) {
-        const sqlQuery = qFile(qPath(sqlDirPath, 'delete').query);
+        const sqlQuery = qFile(qPath(sqlDirPath, 'delete')).query;
         return sql.none(sqlQuery, params);
     }
 }
