@@ -18,27 +18,27 @@ export default class ${name}Ctrl {
     static async getMany(ctx) {
         const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
         const data = await ${moduleName}.getMany();
-        ctx.body = response(ctx.method, data.info, data.optional);
+        ctx.body = response(ctx.method, ctx.lang.code, data.info, data.optional);
     }
     static async getOne(ctx) {
         const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
         const data = await ${moduleName}.getOne();
-        ctx.body = response(ctx.method, data);
+        ctx.body = response(ctx.method, ctx.lang.code, data);
     }
     static async post(ctx) {
         const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
         const data = await ${moduleName}.post();
-        ctx.body = response(ctx.method, data);
+        ctx.body = response(ctx.method, ctx.lang.code, data);
     }
     static async put(ctx) {
         const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
         const data = await ${moduleName}.put();
-        ctx.body = response(ctx.method, data);
+        ctx.body = response(ctx.method, ctx.lang.code, data);
     }
     static async delete(ctx) {
         const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
         await ${moduleName}.delete();
-        ctx.body = response(ctx.method);
+        ctx.body = response(ctx.method, ctx.lang.code);
     }
 }
 `
