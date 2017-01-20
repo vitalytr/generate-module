@@ -16,28 +16,28 @@ import response from './../../../shared/response';
 export default class ${name}Ctrl {
 
     static async getMany(ctx) {
-        const ${moduleName} = new Model(ctx.state.user);
-        const data = await ${moduleName}.getMany(ctx.params, ctx.query);
+        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
+        const data = await ${moduleName}.getMany();
         ctx.body = response(ctx.method, data.info, data.optional);
     }
     static async getOne(ctx) {
-        const ${moduleName} = new Model(ctx.state.user);
-        const data = await ${moduleName}.getOne(ctx.query, ctx.params);
+        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
+        const data = await ${moduleName}.getOne();
         ctx.body = response(ctx.method, data);
     }
     static async post(ctx) {
-        const ${moduleName} = new Model(ctx.state.user);
-        const data = await ${moduleName}.post(ctx.query, ctx.params, ctx.request.body);
+        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
+        const data = await ${moduleName}.post();
         ctx.body = response(ctx.method, data);
     }
     static async put(ctx) {
-        const ${moduleName} = new Model(ctx.state.user);
-        const data = await ${moduleName}.put(ctx.query, ctx.params, ctx.request.body);
+        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
+        const data = await ${moduleName}.put();
         ctx.body = response(ctx.method, data);
     }
     static async delete(ctx) {
-        const ${moduleName} = new Model(ctx.state.user);
-        await ${moduleName}.delete(ctx.query, ctx.params);
+        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
+        await ${moduleName}.delete();
         ctx.body = response(ctx.method);
     }
 }
@@ -52,14 +52,17 @@ import { sql, qFile, qPath, additionalQuery } from './../../../shared/database';
 const sqlDirPath = path.join(__dirname, './sql');
 
 export default class ${name}Ctrl {
-    constructor(user) {
+    constructor(user, params, qs, body = {}) {
         this.user = user;
+        this.params = params;
+        this.qs = qs;
+        this.body = body;
     }
-    async getMany(params, qs) {
+    async getMany() {
         let sqlQuery = qFile(qPath(sqlDirPath, 'getMany')).query;
         const countQuery = qFile(qPath(sqlDirPath, 'getTotalCount')).query;
-        const data = { info: null, optional: { limit: qs.limit || 50, offset: qs.offset || 0 } };
-        sqlQuery += additionalQuery(qs);
+        const data = { info: null, optional: { limit: this.qs.limit || 50, offset: this.qs.offset || 0 } };
+        sqlQuery += additionalQuery(this.qs);
         await sql.task(async (task) => {
             const total = await task.one(countQuery);
             data.optional.total = total.count;
@@ -67,21 +70,21 @@ export default class ${name}Ctrl {
         });
         return data;
     }
-    async getOne(qs, params) {
+    async getOne() {
         const sqlQuery = qFile(qPath(sqlDirPath, 'getOne')).query;
-        return sql.one(sqlQuery, params);
+        return sql.one(sqlQuery, this.params);
     }
-    async post(qs, params, body) {
+    async post() {
         const sqlQuery = qFile(qPath(sqlDirPath, 'post')).query;
-        return sql.one(sqlQuery, { ...params, ...body });
+        return sql.one(sqlQuery, { ...this.params, ...this.body });
     }
-    async put(qs, params, body) {
+    async put() {
         const sqlQuery = qFile(qPath(sqlDirPath, 'put')).query;
-        return sql.one(sqlQuery, { ...params, ...body });
+        return sql.one(sqlQuery, { ...this.params, ...this.body });
     }
-    async delete(qs, params) {
+    async delete() {
         const sqlQuery = qFile(qPath(sqlDirPath, 'delete')).query;
-        return sql.none(sqlQuery, params);
+        return sql.none(sqlQuery, this.params);
     }
 }
 `
@@ -92,6 +95,7 @@ data.routes = (moduleName) => {
     const main = os.platform() === 'win32' ? process.cwd().split('\\') : process.cwd().split('/');
     return `import Router from 'koa-router';
 import ${name} from './controller';
+// import hasAccess from './../../../middlewares/hasAccessHandler';
 
 const router = new Router({
     prefix: '/${main[main.length - 1]}/${moduleName}',
