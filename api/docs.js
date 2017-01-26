@@ -10,7 +10,7 @@ const docs = (moduleName) => {
     const name = toUpper(moduleName);
     const main = (process.platform === 'win32') ? process.cwd().split('\\') : process.cwd().split('/');
 
-    return `## ${name} [/${main[main.length - 1]}/${moduleName}/{?limit,offset,orderby,sort}]
+    return `## ${name} [/${main[main.length - 1]}/${moduleName}{?limit,offset,orderby,sort}]
 
 ### Get Many [GET]
 Get a list of ${moduleName}
