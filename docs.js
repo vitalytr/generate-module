@@ -24,9 +24,10 @@ Get a list of ${moduleName}
     + orderby: ${amp}${moduleName}_id${amp} (string, optional) - By which column to order
         + Default: ${amp}null${amp}
     + sort: ${amp}asc${amp} (enum[string], optional) - Type of sorting (only if **orderby** provided)
-        + Members:
-            + ${amp}asc${amp} (Ascending)
-            + ${amp}desc${amp} (Descending)
+        + Default: ${amp}asc${amp}
+        + Members
+            + ${amp}asc${amp}
+            + ${amp}desc${amp}
 
 + Request Headers
 
