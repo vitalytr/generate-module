@@ -32,7 +32,7 @@ import { sql, qFile, qPath } from './../../../shared/database';
 
 const sqlDirPath = path.join(__dirname, './sql');
 
-export default class ${name}Ctrl {
+export default class ${name} {
 
     constructor(user, qs) {
         this.user = user;

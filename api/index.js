@@ -55,7 +55,7 @@ import { sql, qFile, qPath, additionalQuery } from './../../../shared/database';
 
 const sqlDirPath = path.join(__dirname, './sql');
 
-export default class ${name}Ctrl {
+export default class ${name} {
 
     constructor(user, params, qs, body = {}) {
         this.user = user;
