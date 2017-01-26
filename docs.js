@@ -21,13 +21,11 @@ Get a list of ${moduleName}
         + Default: ${amp}50${amp}
     + offset: 0 (number, optional) - From which object to start counting
         + Default: ${amp}0${amp}
-    + orderby: ${amp}${moduleName}_id${amp} (string, optional) - By which column to order
+    + sort: ${amp}${moduleName}_id${amp} (enum[string], optional) - Which field to sort by
         + Default: ${amp}null${amp}
-    + sort: ${amp}asc${amp} (enum[string], optional) - Type of sorting (only if **orderby** provided)
-        + Default: ${amp}asc${amp}
         + Members
-            + ${amp}asc${amp}
-            + ${amp}desc${amp}
+            + ${amp}${moduleName}_id${amp}
+            + ${amp}-${moduleName}_id${amp}
 
 + Request Headers
 
