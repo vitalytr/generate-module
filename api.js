@@ -1,7 +1,5 @@
 'use strict';
 
-const os = require('os');
-
 const toUpper = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
@@ -10,6 +8,7 @@ const data = {};
 
 data.controller = (moduleName) => {
     const name = toUpper(moduleName);
+
     return `import Model from './model';
 import response from './../../../shared/response';
 
@@ -50,6 +49,7 @@ export default class ${name}Ctrl {
 
 data.model = (moduleName) => {
     const name = toUpper(moduleName);
+
     return `import path from 'path';
 import { sql, qFile, qPath, additionalQuery } from './../../../shared/database';
 
@@ -70,6 +70,7 @@ export default class ${name}Ctrl {
         const data = { info: null, optional: { limit: this.qs.limit || 50, offset: this.qs.offset || 0 } };
         
         sqlQuery += additionalQuery(this.qs);
+        
         await sql.task(async (task) => {
             const total = await task.one(countQuery);
             data.optional.total = total.count;
@@ -100,7 +101,8 @@ export default class ${name}Ctrl {
 
 data.routes = (moduleName) => {
     const name = toUpper(moduleName);
-    const main = os.platform() === 'win32' ? process.cwd().split('\\') : process.cwd().split('/');
+    const main = (process.platform === 'win32') ? process.cwd().split('\\') : process.cwd().split('/');
+
     return `import Router from 'koa-router';
 import ${name} from './controller';
 // import hasAccess from './../../../middlewares/hasAccessHandler';
@@ -118,7 +120,5 @@ router.del('/:id', ${name}.delete);
 export default router;
 `;
 };
-
-
 
 module.exports = data;

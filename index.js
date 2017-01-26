@@ -6,44 +6,28 @@ const fs = require('fs');
 const path = require('path');
 const Promise = require('bluebird');
 const pkg = require('./package.json');
-const apiFileData = require('./apiFileData');
+const api = require('./api');
+const docs = require('./docs');
 
 Promise.promisifyAll(fs);
 
 const createModule = (moduleName) => {
     const structureJS = ['controller.js', 'model.js', 'routes.js'];
     const structureSQL = ['getMany.sql', 'getTotalCount.sql', 'getOne.sql', 'put.sql', 'post.sql', 'delete.sql'];
+    const arrOfModules = moduleName.split(',').map(item => ({ path: path.join(process.cwd(), item), name: item }));
 
-    let arrOfModules = moduleName.split(',').map(item => {
-        return {
-            path: path.join(process.cwd(), item),
-            name: item
-        };
-    });
     let tempPathSQL = '';
-    for (let i = 0; i < arrOfModules.length; i += 1) {
 
-        tempPathSQL = path.join(arrOfModules[i].path, 'sql');
+    arrOfModules.forEach(module => {
+        tempPathSQL = path.join(module.path, 'sql');
 
-        fs.mkdirAsync(arrOfModules[i].path)
-            .then(() => {
-                const filesJS = [];
-                structureJS.forEach(item => {
-                    filesJS.push(fs.writeFileAsync(path.join(arrOfModules[i].path, item),
-                        apiFileData[item.slice(0, -3)](arrOfModules[i].name)));
-                });
-                return Promise.all(filesJS);
-            })
+        fs.mkdirAsync(module.path)
+            .then(() => Promise.all(structureJS.map(file => fs.writeFileAsync(path.join(module.path, file),
+                    api[file.slice(0, -3)](module.name)))))
             .then(() => fs.mkdirAsync(tempPathSQL))
-            .then(() => {
-                const filesSQL = [];
-                structureSQL.forEach(item => {
-                    const fPath = path.join(tempPathSQL, item);
-                    filesSQL.push(fs.writeFileAsync(fPath, ' '));
-                });
-                return Promise.all(filesSQL);
-            });
-    }
+            .then(() => Promise.all(structureSQL.map(file => fs.writeFileAsync(path.join(tempPathSQL, file), ' '))))
+            .then(() => fs.writeFileAsync(path.join(module.path, `${module.name}.apib`), docs(module.name)));
+    });
 };
 
 program
