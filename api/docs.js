@@ -11,7 +11,6 @@ const docs = (moduleName) => {
     const main = (process.platform === 'win32') ? process.cwd().split('\\') : process.cwd().split('/');
 
     return `## ${name} [/${main[main.length - 1]}/${moduleName}/{?limit,offset,orderby,sort}]
-<!--- ****************************************************************************************************** -->
 
 ### Get Many [GET]
 Get a list of ${moduleName}
@@ -48,8 +47,6 @@ Get a list of ${moduleName}
               "total": "0"
             }
 
-<!--- ****************************************************************************************************** -->
-
 ### Add [POST]
 Create a new ${moduleName}
 
@@ -79,16 +76,12 @@ Create a new ${moduleName}
               "data": { YOUR DATA }
             }
 
-<!--- ****************************************************************************************************** -->
-
 ## ${moduleName} [/${main[main.length - 1]}/${moduleName}/{${moduleName}_id}]
 ${moduleName} description
 
 + Parameters
 
     + ${moduleName}_id: ${amp}1${amp} (required, number) - The ${moduleName} ID
-
-<!--- ****************************************************************************************************** -->
 
 ### Get One [GET]
 Get a single ${moduleName}.
@@ -110,8 +103,6 @@ Get a single ${moduleName}.
               "message": "Data was successfully retrieved",
               "data": { YOUR DATA }
             }
-
-<!--- ****************************************************************************************************** -->
 
 ### Update [PUT]
 Update a single ${moduleName}
@@ -141,8 +132,6 @@ Update a single ${moduleName}
               "message": "Data was successfully updated",
               "data": { YOUR DATA }
             }
-
-<!--- ****************************************************************************************************** -->
 
 ### Delete [DELETE]
 Delete a single ${moduleName}
