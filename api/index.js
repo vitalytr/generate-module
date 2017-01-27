@@ -19,30 +19,31 @@ export default class ${name}Ctrl {
         const data = await ${moduleName}.getMany();
         ctx.body = response(ctx.method, ctx.lang.code, data.info, data.optional);
     }
-    
+
     static async getOne(ctx) {
         const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
         const data = await ${moduleName}.getOne();
         ctx.body = response(ctx.method, ctx.lang.code, data);
     }
-    
+
     static async post(ctx) {
         const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
         const data = await ${moduleName}.post();
         ctx.body = response(ctx.method, ctx.lang.code, data);
     }
-    
+
     static async put(ctx) {
         const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
         const data = await ${moduleName}.put();
         ctx.body = response(ctx.method, ctx.lang.code, data);
     }
-    
+
     static async delete(ctx) {
         const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
         await ${moduleName}.delete();
         ctx.body = response(ctx.method, ctx.lang.code);
     }
+
 }
 `
 };
@@ -63,38 +64,39 @@ export default class ${name} {
         this.qs = qs;
         this.body = body;
     }
-    
+
     async getMany() {
         let sqlQuery = qFile(qPath(sqlDirPath, 'getMany')).query;
         const countQuery = qFile(qPath(sqlDirPath, 'getTotalCount')).query;
         const data = { info: null, optional: { limit: this.qs.limit || 50, offset: this.qs.offset || 0 } };
-        
+
         sqlQuery += additionalQuery(this.qs);
-        
+
         await sql.task(async (task) => {
             const total = await task.one(countQuery);
             data.optional.total = total.count;
             data.info = await task.any(sqlQuery);
         });
-        
+
         return data;
     }
-    
+
     async getOne() {
         return sql.one(qFile(qPath(sqlDirPath, 'getOne')), this.params);
     }
-    
+
     async post() {
         return sql.one(qFile(qPath(sqlDirPath, 'post')), { ...this.params, ...this.body });
     }
-    
+
     async put() {
         return sql.one(qFile(qPath(sqlDirPath, 'put')), { ...this.params, ...this.body });
     }
-    
+
     async delete() {
         return sql.none(qFile(qPath(sqlDirPath, 'delete')), this.params);
     }
+
 }
 `
 };

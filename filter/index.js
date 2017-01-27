@@ -19,7 +19,7 @@ export default class ${name}Ctrl {
         const data = await ${moduleName}.getMany();
         ctx.body = response(ctx.method, ctx.lang.code, data);
     }
-    
+
 }
 `
 };
@@ -38,11 +38,11 @@ export default class ${name} {
         this.user = user;
         this.qs = qs;
     }
-    
+
     async getMany() {
         return sql.any(qFile(qPath(sqlDirPath, 'getMany')), { ...this.user, ...this.qs });
     }
-    
+
 }
 `
 };
