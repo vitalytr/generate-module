@@ -4,7 +4,7 @@
   "description": "Script for generating a module for my projects.",
   "main": "index.js",
   "bin": {
-    "gmod": "index.js"
+    "gen": "index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
