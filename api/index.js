@@ -73,7 +73,7 @@ export default class ${name} {
         sqlQuery += additionalQuery(this.qs);
 
         await sql.task(async (task) => {
-            const total = await task.one(countQuery,
+            const total = await task.oneOrNone(countQuery,
                 { ...this.user, ...this.params, ...this.qs });
             data.optional.total = total.count;
             data.info = await task.any(sqlQuery,
@@ -84,17 +84,17 @@ export default class ${name} {
     }
 
     async getOne() {
-        return sql.one(qFile(qPath(sqlDirPath, 'getOne')),
+        return sql.oneOrNone(qFile(qPath(sqlDirPath, 'getOne')),
             { ...this.user, ...this.params, ...this.qs});
     }
 
     async post() {
-        return sql.one(qFile(qPath(sqlDirPath, 'post')),
+        return sql.oneOrNone(qFile(qPath(sqlDirPath, 'post')),
             { ...this.user, ...this.params, ...this.qs, ...this.body });
     }
 
     async put() {
-        return sql.one(qFile(qPath(sqlDirPath, 'put')),
+        return sql.oneOrNone(qFile(qPath(sqlDirPath, 'put')),
             { ...this.user, ...this.params, ...this.qs, ...this.body });
     }
 
