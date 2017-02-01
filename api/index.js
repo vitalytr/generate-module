@@ -73,28 +73,34 @@ export default class ${name} {
         sqlQuery += additionalQuery(this.qs);
 
         await sql.task(async (task) => {
-            const total = await task.one(countQuery, { ...this.user, ...this.qs });
+            const total = await task.one(countQuery,
+                { ...this.user, ...this.params, ...this.qs });
             data.optional.total = total.count;
-            data.info = await task.any(sqlQuery, { ...this.user, ...this.qs });
+            data.info = await task.any(sqlQuery,
+                { ...this.user, ...this.params, ...this.qs });
         });
 
         return data;
     }
 
     async getOne() {
-        return sql.one(qFile(qPath(sqlDirPath, 'getOne')), this.params);
+        return sql.one(qFile(qPath(sqlDirPath, 'getOne')),
+            { ...this.user, ...this.params, ...this.qs});
     }
 
     async post() {
-        return sql.one(qFile(qPath(sqlDirPath, 'post')), { ...this.params, ...this.body });
+        return sql.one(qFile(qPath(sqlDirPath, 'post')),
+            { ...this.user, ...this.params, ...this.qs, ...this.body });
     }
 
     async put() {
-        return sql.one(qFile(qPath(sqlDirPath, 'put')), { ...this.params, ...this.body });
+        return sql.one(qFile(qPath(sqlDirPath, 'put')),
+            { ...this.user, ...this.params, ...this.qs, ...this.body });
     }
 
     async delete() {
-        return sql.none(qFile(qPath(sqlDirPath, 'delete')), this.params);
+        return sql.none(qFile(qPath(sqlDirPath, 'delete')),
+            { ...this.user, ...this.params, ...this.qs});
     }
 
 }
