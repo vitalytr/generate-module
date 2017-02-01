@@ -73,9 +73,9 @@ export default class ${name} {
         sqlQuery += additionalQuery(this.qs);
 
         await sql.task(async (task) => {
-            const total = await task.one(countQuery);
+            const total = await task.one(countQuery, { ...this.user, ...this.qs });
             data.optional.total = total.count;
-            data.info = await task.any(sqlQuery);
+            data.info = await task.any(sqlQuery, { ...this.user, ...this.qs });
         });
 
         return data;
