@@ -124,18 +124,18 @@ data.routes = (moduleName) => {
 
     return `import Router from 'koa-router';
 import ${name} from './controller';
-// import hasAccess from './../../../middlewares/hasAccessHandler';
+import hasAccess from './../../../middlewares/hasAccessHandler';
 
 const router = new Router({
     prefix: '/${main[main.length - 1]}',
 });
 
 router.get('/${moduleName}', ${name}.getAll);
-router.get('/:ee_id/${moduleName}/', ${name}.getMany);
-router.post('/:ee_id/${moduleName}/', ${name}.post);
-router.get('/:ee_id/${moduleName}/:id', ${name}.getOne);
-router.put('/:ee_id/${moduleName}/:id', ${name}.put);
-router.del('/:ee_id/${moduleName}/:id', ${name}.delete);
+router.get('/:ee_id/${moduleName}/', hasAccess.toEe, ${name}.getMany);
+router.post('/:ee_id/${moduleName}/', hasAccess.toEe, ${name}.post);
+router.get('/:ee_id/${moduleName}/:id', hasAccess.toEe, ${name}.getOne);
+router.put('/:ee_id/${moduleName}/:id', hasAccess.toEe, ${name}.put);
+router.del('/:ee_id/${moduleName}/:id', hasAccess.toEe, ${name}.delete);
 
 export default router;
 `;
