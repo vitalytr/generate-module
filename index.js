@@ -6,8 +6,13 @@ const fs = require('fs');
 const path = require('path');
 const Promise = require('bluebird');
 const pkg = require('./package.json');
+
 const api = require('./api/index');
 const docsAPI = require('./api/docs');
+
+const eeAPI = require('./e-api/index');
+const docsEeAPI = require('./e-api/docs');
+
 const filter = require('./filter/index');
 const docsFilter = require('./filter/docs');
 
@@ -29,6 +34,26 @@ const createModule = (moduleName) => {
             .then(() => fs.mkdirAsync(tempPathSQL))
             .then(() => Promise.all(structureSQL.map(file => fs.writeFileAsync(path.join(tempPathSQL, file), ' '))))
             .then(() => fs.writeFileAsync(path.join(module.path, `${module.name}.apib`), docsAPI(module.name)));
+    });
+};
+
+const createEeModule = (moduleName) => {
+    const structureJS = ['controller.js', 'model.js', 'routes.js'];
+    const structureSQL =
+        ['getAll.sql', 'getMany.sql', 'getTotalCount.sql', 'getOne.sql', 'put.sql', 'post.sql', 'delete.sql'];
+    const arrOfModules = moduleName.split(',').map(item => ({ path: path.join(process.cwd(), item), name: item }));
+
+    let tempPathSQL = '';
+
+    arrOfModules.forEach(module => {
+        tempPathSQL = path.join(module.path, 'sql');
+
+        fs.mkdirAsync(module.path)
+            .then(() => Promise.all(structureJS.map(file => fs.writeFileAsync(path.join(module.path, file),
+                    eeAPI[file.slice(0, -3)](module.name)))))
+            .then(() => fs.mkdirAsync(tempPathSQL))
+            .then(() => Promise.all(structureSQL.map(file => fs.writeFileAsync(path.join(tempPathSQL, file), ' '))))
+            .then(() => fs.writeFileAsync(path.join(module.path, `${module.name}.apib`), docsEeAPI(module.name)));
     });
 };
 
@@ -54,13 +79,19 @@ const createFilter = (filterName) => {
 program
     .version(pkg.version)
     .command('api <moduleName>')
-    .description('Create new module for the application. Example: api module1,module2,module3')
+    .description('Create new module for the application. Example: api moduleName')
     .action(createModule);
 
 program
     .version(pkg.version)
+    .command('e-api <moduleName>')
+    .description('Create new module for the application. Example: e-api moduleName')
+    .action(createEeModule);
+
+program
+    .version(pkg.version)
     .command('filter <filterName>')
-    .description('Create new module for the application. Example: api module1,module2,module3')
+    .description('Create new module for the application. Example: filter filterName')
     .action(createFilter);
 
 program.parse(process.argv);
