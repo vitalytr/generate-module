@@ -52,7 +52,7 @@ data.model = (moduleName) => {
     const name = toUpper(moduleName);
 
     return `import path from 'path';
-import { sql, qFile, qPath, additionalQuery } from './../../../shared/database';
+import { sql, qFile, qPath, additionalQuery, search } from './../../../shared/database';
 
 const sqlDirPath = path.join(__dirname, './sql');
 
