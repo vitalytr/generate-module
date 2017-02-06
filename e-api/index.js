@@ -58,7 +58,7 @@ data.model = (moduleName) => {
     const name = toUpper(moduleName);
 
     return `import path from 'path';
-import { sql, qFile, qPath, additionalQuery } from './../../../shared/database';
+import { sql, qFile, qPath, additionalQuery, search } from './../../../shared/database';
 
 const sqlDirPath = path.join(__dirname, './sql');
 
@@ -81,9 +81,10 @@ export default class ${name} {
         await sql.task(async (task) => {
             const total = await task.oneOrNone(countQuery,
                 { ...this.user, ...this.params, ...this.qs });
-            data.optional.total = total.count;
-            data.info = await task.any(sqlQuery,
+            const results = await task.any(sqlQuery,
                 { ...this.user, ...this.params, ...this.qs });
+            data.optional.total = total.count;
+            data.info = (this.qs.q) ? search(results, this.qs.q) : results;
         });
 
         return data;

@@ -75,9 +75,10 @@ export default class ${name} {
         await sql.task(async (task) => {
             const total = await task.oneOrNone(countQuery,
                 { ...this.user, ...this.params, ...this.qs });
-            data.optional.total = total.count;
-            data.info = await task.any(sqlQuery,
+            const results = await task.any(sqlQuery,
                 { ...this.user, ...this.params, ...this.qs });
+            data.optional.total = total.count;
+            data.info = (this.qs.q) ? search(results, this.qs.q) : results;
         });
 
         return data;
