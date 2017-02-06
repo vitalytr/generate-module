@@ -10,7 +10,7 @@ const docs = (moduleName) => {
     const name = toUpper(moduleName);
     const main = (process.platform === 'win32') ? process.cwd().split('\\') : process.cwd().split('/');
 
-    return `## ${name} [/${main[main.length - 1]}/${moduleName}{?q,limit,offset,orderby,sort}]
+    return `## ${name} [/${main[main.length - 1]}/${moduleName}{?q,limit,offset,sort}]
 
 ### Get All [GET]
 Get a list of ${moduleName}
@@ -21,11 +21,10 @@ Get a list of ${moduleName}
         + Default: ${amp}50${amp}
     + offset: 0 (number, optional) - From which object to start counting
         + Default: ${amp}0${amp}
-    + sort: ${amp}${moduleName}_id${amp} (enum[string], optional) - Which field to sort by
+    + sort: ${amp}${moduleName}_id${amp} (enum[string], optional) - Which field to sort by, use ${amp}-${amp} for descending order
         + Default: ${amp}null${amp}
         + Members
             + ${amp}${moduleName}_id${amp}
-            + ${amp}-${moduleName}_id${amp}
 
 + Request Headers
 

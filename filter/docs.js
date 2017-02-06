@@ -16,11 +16,10 @@ const docs = (moduleName) => {
 Get a list of ${moduleName}
 
 + Parameters
-    + sort: ${amp}${moduleName}_id${amp} (enum[string], optional) - Which field to sort by
+    + sort: ${amp}${moduleName}_id${amp} (enum[string], optional) - Which field to sort by, use ${amp}-${amp} for descending order
         + Default: ${amp}null${amp}
         + Members
             + ${amp}${moduleName}_id${amp}
-            + ${amp}-${moduleName}_id${amp}
 
 + Request Headers
 
