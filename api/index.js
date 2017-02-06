@@ -86,7 +86,7 @@ export default class ${name} {
 
     async getOne() {
         return sql.oneOrNone(qFile(qPath(sqlDirPath, 'getOne')),
-            { ...this.user, ...this.params, ...this.qs});
+            { ...this.user, ...this.params, ...this.qs });
     }
 
     async post() {
@@ -101,7 +101,7 @@ export default class ${name} {
 
     async delete() {
         return sql.none(qFile(qPath(sqlDirPath, 'delete')),
-            { ...this.user, ...this.params, ...this.qs});
+            { ...this.user, ...this.params, ...this.qs });
     }
 
 }
