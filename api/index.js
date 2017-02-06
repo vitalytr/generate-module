@@ -74,9 +74,9 @@ export default class ${name} {
 
         await sql.task(async (task) => {
             const total = await task.oneOrNone(countQuery,
-                { ...this.user, ...this.params, ...this.qs });
+                { ...this.qs, ...this.user, ...this.params });
             const results = await task.any(sqlQuery,
-                { ...this.user, ...this.params, ...this.qs });
+                { ...this.qs, ...this.user, ...this.params });
             data.optional.total = total.count;
             data.info = (this.qs.q) ? search(results, this.qs.q) : results;
         });
@@ -86,22 +86,22 @@ export default class ${name} {
 
     async getOne() {
         return sql.oneOrNone(qFile(qPath(sqlDirPath, 'getOne')),
-            { ...this.user, ...this.params, ...this.qs });
+            { ...this.qs, ...this.user, ...this.params });
     }
 
     async post() {
         return sql.oneOrNone(qFile(qPath(sqlDirPath, 'post')),
-            { ...this.user, ...this.params, ...this.qs, ...this.body });
+            { ...this.qs, ...this.body, ...this.user, ...this.params });
     }
 
     async put() {
         return sql.oneOrNone(qFile(qPath(sqlDirPath, 'put')),
-            { ...this.user, ...this.params, ...this.qs, ...this.body });
+            { ...this.qs, ...this.body, ...this.user, ...this.params });
     }
 
     async delete() {
         return sql.none(qFile(qPath(sqlDirPath, 'delete')),
-            { ...this.user, ...this.params, ...this.qs });
+            { ...this.qs, ...this.user, ...this.params });
     }
 
 }

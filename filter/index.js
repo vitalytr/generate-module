@@ -40,7 +40,7 @@ export default class ${name} {
     }
 
     async getMany() {
-        return sql.any(qFile(qPath(sqlDirPath, 'getMany')), { ...this.user, ...this.qs });
+        return sql.any(qFile(qPath(sqlDirPath, 'getMany')), { ...this.qs, ...this.user });
     }
 
 }
