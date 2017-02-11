@@ -66,9 +66,12 @@ export default class ${name} {
     }
 
     async getMany() {
+        this.qs.page = !isNaN(this.qs.page) && Number(this.qs.page) > 0 ? this.qs.page : 1;
+        this.qs.limit =
+            this.qs.limit === 'all' || (!isNaN(this.qs.limit) && Number(this.qs.limit) > 0) ? this.qs.limit : 50;
         let sqlQuery = qFile(qPath(sqlDirPath, 'getMany')).query;
         const countQuery = qFile(qPath(sqlDirPath, 'getTotalCount')).query;
-        const data = { info: null, optional: { limit: this.qs.limit || 50, offset: this.qs.offset || 0 } };
+        const data = { optional: { limit: this.qs.limit, page: this.qs.page } };
 
         sqlQuery += additionalQuery(this.qs);
 
@@ -77,7 +80,7 @@ export default class ${name} {
                 { ...this.qs, ...this.user, ...this.params });
             const results = await task.any(sqlQuery,
                 { ...this.qs, ...this.user, ...this.params });
-            data.optional.total = total.count;
+            data.optional.totalPages = this.qs.limit === 'all' ? 1 : Math.ceil(total.count / this.qs.limit);
             data.info = (this.qs.q) ? search(results, this.qs.q) : results;
         });
 

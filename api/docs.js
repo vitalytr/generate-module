@@ -10,7 +10,7 @@ const docs = (moduleName) => {
     const name = toUpper(moduleName);
     const main = (process.platform === 'win32') ? process.cwd().split('\\') : process.cwd().split('/');
 
-    return `## ${name} [/${main[main.length - 1]}/${moduleName}{?q,limit,offset,sort}]
+    return `## ${name} [/${main[main.length - 1]}/${moduleName}{?q,limit,page,sort}]
 
 ### Get Many [GET]
 Get a list of ${moduleName}
@@ -19,8 +19,8 @@ Get a list of ${moduleName}
     + q: (string, optional) - Search string
     + limit: ${amp}2${amp} (number, optional) - How many objects to receive
         + Default: ${amp}50${amp}
-    + offset: 0 (number, optional) - From which object to start counting
-        + Default: ${amp}0${amp}
+    + page: ${amp}1${amp} (number, optional) - From which page to take data
+        + Default: ${amp}1${amp}
     + sort: ${amp}${moduleName}_id${amp} (enum[string], optional) - Which field to sort by, use ${amp}-${amp} for descending order
         + Default: ${amp}null${amp}
         + Members
@@ -42,9 +42,9 @@ Get a list of ${moduleName}
               "status": 200,
               "message": "Data was successfully retrieved",
               "data": [ ... ],
-              "limit": "2",
-              "offset": 0,
-              "total": "0",
+              "limit": 2,
+              "page": 1,
+              "totalPages": 5,
               "count": 2
             }
 
