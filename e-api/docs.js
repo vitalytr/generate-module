@@ -16,7 +16,7 @@ const docs = (moduleName) => {
 Get a list of ${moduleName}
 
 + Parameters
-    + q: (string, optional) - Search string
+    + q: (string, optional) - Search string, use ';' for multi-search
     + limit: ${amp}2${amp} (number, optional) - How many objects to receive
         + Default: ${amp}50${amp}
     + page: ${amp}1${amp} (number, optional) - From which page to take data
