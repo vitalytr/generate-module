@@ -75,7 +75,7 @@ export default class ${name} {
         this.qs.page = !isNaN(this.qs.page) && Number(this.qs.page) > 0 ? this.qs.page : 1;
         this.qs.limit =
             this.qs.limit === 'all' || (!isNaN(this.qs.limit) && Number(this.qs.limit) > 0) ? this.qs.limit : 50;
-        let sqlQuery = qFile(qPath(sqlDirPath, 'getMany')).query;
+        let sqlQuery = qFile(qPath(sqlDirPath, 'getAll')).query;
         const countQuery = qFile(qPath(sqlDirPath, 'getTotalCount')).query;
         const data = { optional: { limit: this.qs.limit, page: this.qs.page } };
 
