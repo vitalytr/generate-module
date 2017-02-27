@@ -66,7 +66,7 @@ export default class ${name} {
     }
 
     async getMany() {
-        this.qs.page = !isNaN(this.qs.page) && Number(this.qs.page) > 0 ? this.qs.page : 1;
+        this.qs.page = !isNaN(this.qs.page) && Number(this.qs.page) > 0 ? Number(this.qs.page) : 1;
         this.qs.limit =
             this.qs.limit === 'all' || (!isNaN(this.qs.limit) && Number(this.qs.limit) > 0) ? this.qs.limit : 50;
         let sqlQuery = qFile(qPath(sqlDirPath, 'getMany')).query;
