@@ -10,7 +10,6 @@ data.controller = (moduleName) => {
     const name = toUpper(moduleName);
 
     return `import Model from './model';
-import response from './../../../shared/response';
 
 const getAll = async (ctx, next) {
     const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
