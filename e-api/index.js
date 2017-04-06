@@ -12,45 +12,50 @@ data.controller = (moduleName) => {
     return `import Model from './model';
 import response from './../../../shared/response';
 
-export default class ${name}Ctrl {
-
-    static async getAll(ctx) {
-        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
-        const data = await ${moduleName}.getAll();
-        ctx.body = response(ctx.method, ctx.lang.code, data.info, data.optional);
-    }
-    
-    static async getMany(ctx) {
-        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
-        const data = await ${moduleName}.getMany();
-        ctx.body = response(ctx.method, ctx.lang.code, data);
-    }
-
-    static async getOne(ctx) {
-        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
-        const data = await ${moduleName}.getOne();
-        ctx.body = response(ctx.method, ctx.lang.code, data);
-    }
-
-    static async post(ctx) {
-        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
-        const data = await ${moduleName}.post();
-        ctx.body = response(ctx.method, ctx.lang.code, data);
-    }
-
-    static async put(ctx) {
-        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
-        const data = await ${moduleName}.put();
-        ctx.body = response(ctx.method, ctx.lang.code, data);
-    }
-
-    static async delete(ctx) {
-        const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
-        await ${moduleName}.delete();
-        ctx.body = response(ctx.method, ctx.lang.code);
-    }
-
+const getAll = async (ctx, next) {
+    const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
+    ctx.state.data = ${moduleName}.getAll();
+    await next();
 }
+
+const getMany = async (ctx, next) {
+    const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
+    ctx.state.data = ${moduleName}.getMany();
+    await next();
+}
+
+const getOne = async (ctx, next) {
+    const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
+    ctx.state.data = ${moduleName}.getOne();
+    await next();
+}
+
+const post = async (ctx, next) {
+    const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
+    ctx.state.data = ${moduleName}.post();
+    await next();
+}
+
+const put = async (ctx, next) {
+    const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
+    ctx.state.data = ${moduleName}.put();
+    await next();
+}
+
+const del = async (ctx, next) {
+    const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
+    await ${moduleName}.delete();
+    await next();
+}
+
+export default {
+    getAll,
+    getMany,
+    getOne,
+    post,
+    put,
+    del,
+};
 `
 };
 
@@ -139,7 +144,7 @@ router.get('/:ee_id/${moduleName}/', hasAccess.toEe, ${name}.getMany);
 router.post('/:ee_id/${moduleName}/', hasAccess.toEe, ${name}.post);
 router.get('/:ee_id/${moduleName}/:id', hasAccess.toEe, ${name}.getOne);
 router.put('/:ee_id/${moduleName}/:id', hasAccess.toEe, ${name}.put);
-router.del('/:ee_id/${moduleName}/:id', hasAccess.toEe, ${name}.delete);
+router.del('/:ee_id/${moduleName}/:id', hasAccess.toEe, ${name}.del);
 
 export default router;
 `;

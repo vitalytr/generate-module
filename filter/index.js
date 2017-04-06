@@ -14,10 +14,10 @@ import response from './../../../shared/response';
 
 export default class ${name}Ctrl {
 
-    static async getMany(ctx) {
+    static async getMany(ctx, next) {
         const ${moduleName} = new Model(ctx.state.user, ctx.query);
-        const data = await ${moduleName}.getMany();
-        ctx.body = response(ctx.method, ctx.lang.code, data);
+        ctx.state.data = await ${moduleName}.getMany();
+        await next();
     }
 
 }
