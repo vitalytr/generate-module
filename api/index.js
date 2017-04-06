@@ -16,31 +16,31 @@ const getMany = async (ctx, next) => {
     const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
     ctx.state.data = await ${moduleName}.getMany();
     await next();
-}
+};
 
 const getOne = async (ctx, next) => {
     const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
     ctx.state.data = await ${moduleName}.getOne();
     await next();
-}
+};
 
 const post = async (ctx, next) => {
     const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
     ctx.state.data = await ${moduleName}.post();
     await next();
-}
+};
 
 const put = async (ctx, next) => {
     const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query, ctx.request.body);
     ctx.state.data = await ${moduleName}.put();
     await next();
-}
+};
 
 const del = async (ctx, next) => {
     const ${moduleName} = new Model(ctx.state.user, ctx.params, ctx.query);
     await ${moduleName}.delete();
     await next();
-}
+};
 
 export default {
     getMany,

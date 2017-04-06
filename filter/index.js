@@ -12,15 +12,15 @@ data.controller = (moduleName) => {
     return `import Model from './model';
 import response from './../../../shared/response';
 
-export default class ${name}Ctrl {
-
-    static async getMany(ctx, next) {
+const getMany = async (ctx, next) => {
         const ${moduleName} = new Model(ctx.state.user, ctx.query);
         ctx.state.data = await ${moduleName}.getMany();
         await next();
-    }
+};
 
-}
+export default {
+    getMany,
+};
 `
 };
 
