@@ -76,7 +76,7 @@ export default class ${name} {
         const countQuery = qFile(qPath(sqlDirPath, 'getTotalCount')).query;
         const data = { optional: { limit: this.qs.limit, page: this.qs.page } };
 
-        sqlQuery += additionalQuery(this.qs);
+        sqlQuery += await additionalQuery(this.qs);
 
         await sql.task(async (task) => {
             const total = await task.oneOrNone(countQuery,
@@ -84,7 +84,7 @@ export default class ${name} {
             const results = await task.any(sqlQuery,
                 { ...this.qs, ...this.user, ...this.params });
             data.optional.totalPages = this.qs.limit === 'all' ? 1 : Math.ceil(total.count / this.qs.limit);
-            data.info = (this.qs.q) ? search(results, this.qs.q) : results;
+            data.info = (this.qs.q) ? await search(results, this.qs.q) : results;
         });
 
         return data;
